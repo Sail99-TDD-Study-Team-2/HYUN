@@ -11,6 +11,12 @@ public class PasswordStrengthMeter {
         if (lengthEnough && !containsNum && !containsUpp) {
             return PasswordStrength.WEAK;
         }
+        if (!lengthEnough && containsNum && !containsUpp) {
+            return PasswordStrength.WEAK;
+        }
+        if (!lengthEnough && !containsNum && containsUpp) {
+            return PasswordStrength.WEAK;
+        }
 
         // 규칙을 검사한 결과에 따라 암호강도를 계산하는 로직
         if (!lengthEnough) return PasswordStrength.NORMAL;
