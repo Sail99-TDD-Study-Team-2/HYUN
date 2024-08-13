@@ -122,3 +122,104 @@ TDD가 나의 가려운 부분을 잘 긁어주지 않을까. 열심히해보장
 > 테스트 코드를 작성하려면 입력과 결과가 명확해야 하므로 애매한 점을 발견하면 기획자나 실무 담당자와 얘기해서 상황에 따라 기능이 어떻게 동작해야 하는지 구체적으로 정리해야 한다.
 
 *커뮤니케이션이 참 중요하다*
+
+---
+
+## (W03)Chap05 JUnit 5 기초
+
+### JUnit5 모듈 구성
+
+- JUnit 플랫폼
+  - 테스팅 프레임워크를 구동하기 위한 런처와 테스트 엔진을 위한 API제공
+- JUnit 주피터(Jupiter)
+  - JUnit5를 위한 테스트 API와 실행 엔진 제공
+- JUnit 빈티지(Vintage)
+  - JUnit3,4로 작성된 테스트를 JUnit5 플랫폼에서 실행하기 위한 모듈 제공
+
+<br/>
+
+```groovy
+dependencies {
+    testImplementation('org.junit.jupiter:junit-jupiter:5.5.0')
+}
+
+test {
+    useJUnitPlatform()
+}
+```
+
+<br/>
+
+### @Test애노테이션과 테스트 메서드
+
+- JUnit의 기본구조 - 테스트로 사용할 클래스 작성 후 `@Test` 애노테이션을 메서드에 붙이기
+- `@Test`애노테이션을 붙인 메서드는 private이면 안됨
+- JUnit의 Assertions 클래스 : 값을 검증하기 위한 다양한 정적 메서드 제공
+
+<br/>
+
+### 주요 단언 메서드
+
+|메서드| 설명                               |
+|---|----------------------------------|
+|assertEquals(exptected, actual)| 실제 값actual이 기대값expected과 일치검사    |
+|assertNotEquals(unexpected,actual)| 실제 값actual이 특정값unexpected의 불일치검사|
+|assertSame(Object expected, Object actual)|두 객체가 동일한 객체인지 검사|
+|assertNotSam(Object unexpected, Object actual)|두 객체 부동일객체인지 검사|
+|assertTrue(boolean condition)|값condition이 true인지 검사|
+|assertFalse(boolean condition)|값condition이 false인지 검사|
+|assertNull(Object actual)|값이 null인지 검사|
+|assertNotNull(Object actual)|값이 null이 아닌지 검사|
+|fail()|테스트 실패처리|
+
+- 익셉션 발생 유무가 검증 대상이라면 
+
+|메서드|설명| 
+|-|-|
+|assertThrows(Class<T> expectedType,Executable executable)|executable을 실행한 결과로 지정한 타입의 익셉션이 발생하는지 검사|
+|assertDoesNotThrow(Executable executable)|executable을 실행한 결과로 익셉션이 발생하지 않는지 검사|
+
+
+- 일단 모든 검증을 실행하고 그 중 실패한 것 확인하고 싶다면
+  - assertAll() 메서드 사용하기
+
+
+<br/>
+
+### 테스트 라이프사이클
+
+- JUnit 테스트 메서드별 코드 실행 순서
+  1. 테스트 메서드를 포함한 객체 생성
+  2. (존재시) `@BeforeEach`애노테이션이 붙은 메서드 실행
+  3. `@Test`애노테이션이 붙은 메서드 실행
+  4. (존재시) `@AfterEach` 애노테이션이 붙은 메서드 실행
+- `@BeforeEach` : 테스트 실행 준비 작업 ex. 임시파일생성, 객체생성
+- `@AfterEach` : 테스트 실행 후 정리 ex. 테스트시 사용한 임시 파일 삭제
+- 두 애노테이션이 붙은 메서드도 private이면 안됨.
+- `@BeforeAll`, `@AfterAll` : 한 클래스의 모든 테스트 메서드가 실행되기 전 후로 특정 작업 수행.
+
+<br/>
+
+### 테스트 메서드 간 실행 순서 의존과 필드 공유하지 않기
+
+- 각 테스트 메서드는 서로 독립적으로 동작해야 한다. 
+- 테스트 메서드가 서로 필드를 공유한다거나 실행 순서를 가정하고 테스트를 작성하지 말아야 한다. 
+- 테스트 메서드 간 의존이 생기면 이는 테스트 코드의 유지보수를 어렵게 만든다. 
+
+<br/>
+
+### 추가 애노테이션
+
+- `@DisplayName` : 테스트의 표시이름 지정
+- `@Disabled` : 특정 테스트 실행하지 않을때
+
+<br/>
+
+### 모든 테스트 실행하기
+
+- `mvn test`(래퍼 사용시 `mvnw test`)
+  - 메이븐의 라이프사이클에 따라 package 단계 실행시 test를 앞서 실행하므로 
+  - `mvn package` 명령어를 실행해도 테스트 실행
+- `gradle test`(래퍼 사용시 `gradlew test`)
+  - 그레이들도 build 태스크 실행시 테스트 실행하므로
+  - `gradle build` 명령어를 실행하면 테스트 실행
