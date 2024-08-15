@@ -14,8 +14,6 @@ import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.mock;
 
 public class GameGenMockTest {
-    private UserRegister userRegister;
-    private EmailNotifier mockEmailNotifier = mock(EmailNotifier.class);
 
     @Test
     void mockTest() {
@@ -94,25 +92,5 @@ public class GameGenMockTest {
         // should() -> 모의 객체의 메서드가 불려야 한다. 그 뒤에 실제로 불려야 할 메서드 지정
         then(genMock).should(only()).generate(GameLevel.EASY);
     }
-
-
-    @Test @DisplayName("인자캡쳐 - 가입하면 메일을 전송함")
-    void whenRegisterThenSendMail() {
-        userRegister.register("id","pw","email@email.com");
-
-        // 인자 보관
-        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        then(mockEmailNotifier)
-                .should().sendRegisterEmail(captor.capture()); // 인자 전달
-
-        String realEmail = captor.getValue(); // 인자 구해내기
-        assertEquals(
-                "email@email.com",
-                realEmail
-        );
-    }
-
-
-
 
 }

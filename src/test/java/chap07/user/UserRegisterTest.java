@@ -62,5 +62,7 @@ public class UserRegisterTest {
                 "email@email.com",
                 spyEmailNotifier.getEmail()
         );
+        // 이메일 발송 자체는 UserRegister 에서 구현하면 테스트 코드에서 발송 여부를 확인하기 어렵다.
+        // 결과 확인과 관련된 기능을 별도 타입으로 분리하고 이를 대역으로 대체하면 된다.
     }
 }
