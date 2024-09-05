@@ -7,11 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class StrikeBallNothingTest {
 
-    private static void assertJudgementValid(String guess, ValidJudgement judge) {
-        assertEquals(new Umpire().judgeValid(guess), judge);
-    }
-
-    private static void assertJudgementValidWithTarget(String target, String guess, ValidJudgement judge) {
+    private static void assertJudgementValid(String target, String guess, ValidJudgement judge) {
         assertEquals(new Umpire(target).judgeValid(guess), judge);
     }
 
@@ -23,17 +19,19 @@ public class StrikeBallNothingTest {
     @Test
     @DisplayName("숫자가 아닌 값을 포함하면 FOUL")
     void includesNonNumber_then_FOUL() {
+        String target = "123";
         String guess = "12t";
-        assertJudgementValid(guess, ValidJudgement.FOUL);
+        assertJudgementValid(target, guess, ValidJudgement.FOUL);
     }
 
     @Test
     @DisplayName("3자리 숫자를 입력하지 않으면 FOUL")
     void notLength3_then_FOUL() {
+        String target = "123";
         String guess = "12";
         String guess2 = "1234";
-        assertJudgementValid(guess, ValidJudgement.FOUL);
-        assertJudgementValid(guess2, ValidJudgement.FOUL);
+        assertJudgementValid(target, guess, ValidJudgement.FOUL);
+        assertJudgementValid(target, guess2, ValidJudgement.FOUL);
     }
 
     @Test
@@ -43,7 +41,7 @@ public class StrikeBallNothingTest {
         String target = "876";
         String guess = "123";
 
-        assertJudgementValidWithTarget(target, guess, ValidJudgement.NOTHING);
+        assertJudgementValid(target, guess, ValidJudgement.NOTHING);
     }
 
     @Test
@@ -52,7 +50,7 @@ public class StrikeBallNothingTest {
         String target = "876";
         String guess = "456";
 
-        assertJudgementValidWithTarget(target, guess, ValidJudgement.VALID);
+        assertJudgementValid(target, guess, ValidJudgement.VALID);
     }
 
     @Test
