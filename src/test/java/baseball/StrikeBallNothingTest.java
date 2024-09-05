@@ -7,19 +7,24 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class StrikeBallNothingTest {
 
-    private static void assertJudgement(String guess, Judgement judge) {
-        assertEquals(new Umpire().judge(guess), judge);
+    private static void assertJudgementValid(String guess, ValidJudgement judge) {
+        assertEquals(new Umpire().judgeValid(guess), judge);
     }
 
-    private static void assertJudgementWithTarget(String target, String guess, Judgement judge) {
-        assertEquals(new Umpire(target).judge(guess), judge);
+    private static void assertJudgementValidWithTarget(String target, String guess, ValidJudgement judge) {
+        assertEquals(new Umpire(target).judgeValid(guess), judge);
+    }
+
+    private static void assertJudgement(String target, String guess, Judgement judgement) {
+        char[] chars = guess.toCharArray();
+        assertEquals(new Umpire(target).judge(chars, 0), judgement);
     }
 
     @Test
     @DisplayName("숫자가 아닌 값을 포함하면 FOUL")
     void includesNonNumber_then_FOUL() {
         String guess = "12t";
-        assertJudgement(guess, Judgement.FOUL);
+        assertJudgementValid(guess, ValidJudgement.FOUL);
     }
 
     @Test
@@ -27,8 +32,8 @@ public class StrikeBallNothingTest {
     void notLength3_then_FOUL() {
         String guess = "12";
         String guess2 = "1234";
-        assertJudgement(guess, Judgement.FOUL);
-        assertJudgement(guess2, Judgement.FOUL);
+        assertJudgementValid(guess, ValidJudgement.FOUL);
+        assertJudgementValid(guess2, ValidJudgement.FOUL);
     }
 
     @Test
@@ -38,7 +43,7 @@ public class StrikeBallNothingTest {
         String target = "876";
         String guess = "123";
 
-        assertJudgementWithTarget(target, guess, Judgement.NOTHING);
+        assertJudgementValidWithTarget(target, guess, ValidJudgement.NOTHING);
     }
 
     @Test
@@ -47,12 +52,34 @@ public class StrikeBallNothingTest {
         String target = "876";
         String guess = "456";
 
-        assertJudgementWithTarget(target, guess, Judgement.VALID);
+        assertJudgementValidWithTarget(target, guess, ValidJudgement.VALID);
     }
 
     @Test
-    @DisplayName("위치는 일치하지 않지만 숫자만 일치하는 경우는 BALL")
-    void testBall() {
+    @DisplayName("위치는 일치하지 않지만 숫자만 일치하는 경우는 BALL_맨앞자리만 판단")
+    void test1Ball() {
+        // 테스트의 편의를 위해 1B의 경우만 테스트.
+        String target = "876";
+        String guess = "612";
 
+        assertJudgement(target, guess, Judgement.BALL);
+    }
+
+    @Test
+    @DisplayName("위치와 숫자가 모두 일치하는 경우는 STRIKE_맨앞자리만 판단")
+    void test1Strike() {
+        String target = "876";
+        String guess = "845";
+
+        assertJudgement(target, guess, Judgement.STRIKE);
+    }
+
+    @Test
+    @DisplayName("위치와 숫자가 모두 일치하지 않는 경우는 OUT_맨앞자리에 대해서만 판단")
+    void test1Out() {
+        String target = "876";
+        String guess = "165";
+
+        assertJudgement(target, guess, Judgement.OUT);
     }
 }

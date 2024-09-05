@@ -1,5 +1,5 @@
 package baseball;
 
-public enum Judgement {
+public enum ValidJudgement {
     NOTHING, VALID, FOUL
 }
