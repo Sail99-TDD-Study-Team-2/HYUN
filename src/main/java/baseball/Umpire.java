@@ -2,7 +2,7 @@ package baseball;
 
 public class Umpire {
 
-    private String target;
+    private final String target;
 
     public Umpire() {
         this.target = "123";
